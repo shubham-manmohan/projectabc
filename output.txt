@@ -1,0 +1,68 @@
+Folder PATH listing for volume New Volume
+Volume serial number is 5812-3099
+D:.
+|   .gitignore
+|   app.json
+|   eslint.config.js
+|   expo-env.d.ts
+|   output.txt
+|   package-lock.json
+|   package.json
+|   README.md
+|   tsconfig.json
+|   
++---.expo
+|   |   devices.json
+|   |   README.md
+|   |   
+|   \---types
+|           router.d.ts
+|           
++---.vscode
+|       settings.json
+|       
++---app
+|   |   +not-found.tsx
+|   |   _layout.tsx
+|   |   
+|   \---(tabs)
+|           explore.tsx
+|           index.tsx
+|           _layout.tsx
+|           
++---assets
+|   +---fonts
+|   |       SpaceMono-Regular.ttf
+|   |       
+|   \---images
+|           adaptive-icon.png
+|           favicon.png
+|           icon.png
+|           partial-react-logo.png
+|           react-logo.png
+|           react-logo@2x.png
+|           react-logo@3x.png
+|           splash-icon.png
+|           
++---components
+|   |   Collapsible.tsx
+|   |   ExternalLink.tsx
+|   |   HapticTab.tsx
+|   |   HelloWave.tsx
+|   |   ParallaxScrollView.tsx
+|   |   ThemedText.tsx
+|   |   ThemedView.tsx
+|   |   
+|   \---ui
+|           IconSymbol.ios.tsx
+|           IconSymbol.tsx
+|           TabBarBackground.ios.tsx
+|           TabBarBackground.tsx
+|           
++---constants
+|       Colors.ts
+|       
++---hooks
+|       useColorScheme.ts
+|       useColorScheme.web.ts
+|       useThemeColor.ts
