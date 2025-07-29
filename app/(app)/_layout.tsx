@@ -10,7 +10,7 @@ export default function AppLayout() {
         if (!isAuthenticated) {
             router.replace("/login");
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, router]);
 
     return (
         <Stack >
@@ -22,7 +22,11 @@ export default function AppLayout() {
                     "headerShown": true,
                     "headerTitle": "New Note",
                     "headerBackTitle": "Back",
-                }}></Stack.Screen>
+                }}>
+            </Stack.Screen>
+            <Stack.Screen
+                name="(note)/[noteid]">
+            </Stack.Screen>
         </Stack>
     );
 }

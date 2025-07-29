@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     },
     preview: {
         fontSize: 13,
-        color: "#444",
+        color: "#999",
         marginTop: 2,
     },
     actionContainer: {

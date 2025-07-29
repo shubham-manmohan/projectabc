@@ -5,6 +5,7 @@ import { notes as dummyNotes, Note } from "@/services/dummydata";
 import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
 import { GestureHandlerRootView, Pressable } from "react-native-gesture-handler";
+import { useRouter } from "expo-router";
 
 export default function NotesList() {
     const [notes, setNotes] = useState<Note[]>(dummyNotes);
@@ -13,6 +14,8 @@ export default function NotesList() {
     const [modalVisible, setModalVisible] = useState(false);
 
     const openSwipeRef = React.useRef<any>(null);
+
+    const router = useRouter();
 
     const handleSwipeOpen = (ref: any) => {
         if (openSwipeRef?.current && openSwipeRef.current !== ref) {
@@ -48,9 +51,13 @@ export default function NotesList() {
     };
 
     const handleEdit = (id: string) => {
-        // Navigate to edit screen or open modal
-        console.log("Edit note id:", id);
+        router.navigate({
+            pathname: '/(app)/(note)/[noteid]',
+            params: { noteid: id }
+        })
     };
+
+
 
     const handlePin = (id: string) => {
         console.log("Pin Node:", id);

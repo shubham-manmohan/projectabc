@@ -7,7 +7,7 @@ export default function TabTwoScreen() {
   return (
 
     <ThemedView style={styles.titleContainer}>
-      <ThemedText type="title">Explore</ThemedText>
+      <ThemedText type="title">Account</ThemedText>
     </ThemedView>
 
   );
