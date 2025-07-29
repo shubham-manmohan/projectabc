@@ -58,9 +58,10 @@ export default function NoteItem({ note, onArchive, onDelete, onEdit, onPin, onL
         <GestureHandlerRootView>
             <ReanimatedSwipeable
                 ref={swipeableRef}
-                friction={2}
+                friction={1}
                 rightThreshold={40}
                 overshootRight={false}
+                overshootLeft={false}
                 renderRightActions={renderRightActions}
                 onSwipeableOpen={() => {
                     if (onSwipeOpen) {
@@ -79,7 +80,7 @@ export default function NoteItem({ note, onArchive, onDelete, onEdit, onPin, onL
                             </ThemedText>
 
                             <ThemedView style={styles.metaRow}>
-                                <ThemedText style={styles.type}>{note.type}</ThemedText>
+                                <ThemedText style={styles.type}><ThemedText type="defaultSemiBold" style={{ "fontSize": 12 }}> Type:</ThemedText>{note.type}</ThemedText>
                                 <ThemedText style={styles.date}>{note.date}</ThemedText>
                             </ThemedView>
 

@@ -1,4 +1,3 @@
-import { StyleSheet } from 'react-native';
 
 import NotesList from '@/components/app/NotesList';
 
@@ -8,6 +7,3 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-
-});

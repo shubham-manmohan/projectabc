@@ -83,7 +83,7 @@ export default function NotesList() {
                         onSwipeOpen={handleSwipeOpen}
                     />
                 )}
-                contentContainerStyle={{ paddingVertical: 12 }}
+                contentContainerStyle={{ paddingVertical: 0, paddingBottom: 80 }}
             />
             <Modal
                 visible={modalVisible}
