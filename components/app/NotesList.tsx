@@ -1,14 +1,23 @@
 import React, { useState } from "react";
-import { FlatList, Alert, Modal } from "react-native";
+import { FlatList, Alert, Modal, StyleSheet } from "react-native";
 import NoteItem from "./NoteItem";
 import { notes as dummyNotes, Note } from "@/services/dummydata";
 import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
 import { GestureHandlerRootView, Pressable } from "react-native-gesture-handler";
 import { useRouter } from "expo-router";
+import { SearchBar } from "react-native-elements";
+import { SearchBarBaseProps } from "react-native-elements/dist/searchbar/SearchBar";
+
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function NotesList() {
     const [notes, setNotes] = useState<Note[]>(dummyNotes);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const filteredNotes = notes.filter(note =>
+        note.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -74,10 +83,44 @@ export default function NotesList() {
         setModalVisible(false);
     };
 
+    const SafeSearchBar = (SearchBar as unknown) as React.FC<SearchBarBaseProps>;
+
+    const colorScheme = useColorScheme();
+    const isDark = colorScheme === 'dark';
     return (
         <>
+            <ThemedView style={styles.wrapper}>
+                <SafeSearchBar
+                    platform="default"
+                    placeholder="Search notes..."
+                    onChangeText={(text) => setSearchQuery(text)}
+                    value={searchQuery}
+                    containerStyle={[
+                        styles.containerBase,
+                        {
+                            backgroundColor: "transparent", // keep outer transparent
+                        },
+                    ]}
+                    inputContainerStyle={[
+                        styles.inputBase,
+                        {
+                            backgroundColor: isDark ? "#1c1c1e" : "#f1f1f3",
+                            borderColor: isDark ? "#3a3a3c" : "#d0d0d0",
+                        },
+                    ]}
+                    inputStyle={{ fontSize: 16, color: isDark ? "#fff" : "#000" }}
+                    clearIcon={{ type: "material", name: "close" }}
+                    searchIcon={{ type: "material", name: "search" }}
+                    loadingProps={{ size: "small" }}
+                    showLoading={false}
+                    onCancel={() => setSearchQuery("")}
+                    onClear={() => setSearchQuery("")}
+                    onFocus={() => { }}
+                    onBlur={() => { }}
+                />
+            </ThemedView>
             <FlatList
-                data={notes}
+                data={filteredNotes}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <NoteItem
@@ -91,6 +134,7 @@ export default function NotesList() {
                     />
                 )}
                 contentContainerStyle={{ paddingVertical: 0, paddingBottom: 80 }}
+            // ItemSeparatorComponent={() => { return (<View style={{ height: 1, backgroundColor: 'black' }}></View>) }}
             />
             <Modal
                 visible={modalVisible}
@@ -100,7 +144,7 @@ export default function NotesList() {
                 <GestureHandlerRootView style={{ flex: 1, justifyContent: "center", padding: 16 }}>
                     <ThemedView
                         style={{
-                            backgroundColor: "#fff",
+                            backgroundColor: isDark ? "#1c1c1e" : "#f1f1f3",
                             borderRadius: 12,
                             padding: 16,
                         }}
@@ -124,3 +168,19 @@ export default function NotesList() {
         </>
     );
 }
+const styles = StyleSheet.create({
+    wrapper: {
+        paddingHorizontal: 2,
+        paddingTop: 0,
+    },
+    containerBase: {
+        borderTopWidth: 0,
+        borderBottomWidth: 0,
+        padding: 2,
+    },
+    inputBase: {
+        borderRadius: 10,
+        paddingHorizontal: 12,
+        paddingVertical: 0,
+    },
+});

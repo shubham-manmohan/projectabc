@@ -1,7 +1,8 @@
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useLayoutEffect } from 'react';
-import { View, Text } from 'react-native';
 import { notes } from '@/services/dummydata';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 
 export default function NoteDetailsScreen() {
     const { noteid } = useLocalSearchParams();
@@ -13,7 +14,7 @@ export default function NoteDetailsScreen() {
         if (note) {
             navigation.setOptions({
                 headerTitle: () => (
-                    <Text
+                    <ThemedText
                         numberOfLines={1}
                         ellipsizeMode="tail"
                         style={{
@@ -23,7 +24,7 @@ export default function NoteDetailsScreen() {
                         }}
                     >
                         {note.title}
-                    </Text>
+                    </ThemedText>
                 ),
             });
         }
@@ -31,16 +32,16 @@ export default function NoteDetailsScreen() {
 
     if (!note) {
         return (
-            <View>
-                <Text>Note not found</Text>
-            </View>
+            <ThemedView>
+                <ThemedText>Note not found</ThemedText>
+            </ThemedView>
         );
     }
 
     return (
-        <View style={{ padding: 16 }}>
-            <Text style={{ fontSize: 24 }}>{note.title}</Text>
-            <Text style={{ marginTop: 12 }}>{note.preview}</Text>
-        </View>
+        <ThemedView style={{ padding: 16 }}>
+            <ThemedText style={{ fontSize: 24 }}>{note.title}</ThemedText>
+            <ThemedText style={{ marginTop: 12 }}>{note.preview}</ThemedText>
+        </ThemedView>
     );
 }
