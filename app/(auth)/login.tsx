@@ -118,6 +118,7 @@ export default function LoginScreen() {
                             autoCapitalize="none"
                             onChangeText={setEmail}
                             style={[styles.input, { color: isDark ? "#fff" : "#000" }]}
+                            keyboardType="email-address"
                         />
                         <TextInput
                             placeholder="Password"
@@ -135,6 +136,10 @@ export default function LoginScreen() {
                                 <ThemedText style={styles.loginButtonText}>Login with Face ID / PIN</ThemedText>
                             </TouchableOpacity>
                         )}
+
+                        <TouchableOpacity onPress={() => router.push("/(auth)/signup")}>
+                            <ThemedText style={styles.signupLink}>Don&apos;t have an account? Sign up</ThemedText>
+                        </TouchableOpacity>
                     </ThemedView>
                 </ThemedView>
             </Animated.ScrollView>
@@ -203,4 +208,11 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontWeight: "600",
     },
+    signupLink: {
+        marginTop: 20,
+        fontSize: 14,
+        color: "#635BFF",
+        textAlign: "center",
+    },
+
 });
