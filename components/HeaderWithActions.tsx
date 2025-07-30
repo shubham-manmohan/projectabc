@@ -26,8 +26,8 @@ export default function HeaderWithActions({ onAdd }: Props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => {
-                        logout(); // clear auth state
+                    onPress={async () => {
+                        await logout();
                         router.replace("/login");
                     }}
                     style={styles.iconButton}

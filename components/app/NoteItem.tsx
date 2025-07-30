@@ -80,7 +80,7 @@ export default function NoteItem({ note, onArchive, onDelete, onEdit, onPin, onL
                             </ThemedText>
 
                             <ThemedView style={styles.metaRow}>
-                                <ThemedText style={styles.type}><ThemedText type="defaultSemiBold" style={{ "fontSize": 12 }}> Type:</ThemedText>{note.type}</ThemedText>
+                                <ThemedText style={styles.type}><ThemedText type="defaultSemiBold" style={{ "fontSize": 12, color: '#bbb' }}> Type:</ThemedText>{note.type}</ThemedText>
                                 <ThemedText style={styles.date}>{note.date}</ThemedText>
                             </ThemedView>
 
