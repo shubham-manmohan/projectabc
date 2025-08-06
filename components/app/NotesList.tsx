@@ -1,7 +1,9 @@
+//File components/app/NoteList.tsx
+
 import React, { useState } from "react";
 import { FlatList, Alert, Modal, StyleSheet } from "react-native";
 import NoteItem from "./NoteItem";
-import { notes as dummyNotes, Note } from "@/services/dummydata";
+import { notes as dummyNotes } from "@/services/dummydata";
 import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
 import { GestureHandlerRootView, Pressable } from "react-native-gesture-handler";
@@ -10,6 +12,7 @@ import { SearchBar } from "react-native-elements";
 import { SearchBarBaseProps } from "react-native-elements/dist/searchbar/SearchBar";
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { Note } from "@/types/notetypes";
 
 export default function NotesList() {
     const [notes, setNotes] = useState<Note[]>(dummyNotes);
@@ -33,7 +36,7 @@ export default function NotesList() {
         openSwipeRef.current = ref;
     };
 
-    const handleArchive = (id: string) => {
+    const handleArchive = (id: number) => {
         Alert.alert("Archive", "Are you sure you want to archive this note?", [
             { text: "Cancel", style: "cancel" },
             {
@@ -46,7 +49,7 @@ export default function NotesList() {
         ]);
     };
 
-    const handleDelete = (id: string) => {
+    const handleDelete = (id: number) => {
         Alert.alert("Delete", "Are you sure you want to delete this note?", [
             { text: "Cancel", style: "cancel" },
             {
@@ -59,7 +62,7 @@ export default function NotesList() {
         ]);
     };
 
-    const handleEdit = (id: string) => {
+    const handleEdit = (id: number) => {
         router.navigate({
             pathname: '/(app)/(note)/[noteid]',
             params: { noteid: id }
@@ -68,7 +71,7 @@ export default function NotesList() {
 
 
 
-    const handlePin = (id: string) => {
+    const handlePin = (id: number) => {
         console.log("Pin Node:", id);
     };
 
@@ -91,6 +94,7 @@ export default function NotesList() {
         <>
             <ThemedView style={styles.wrapper}>
                 <SafeSearchBar
+                    key="search-bar"
                     platform="default"
                     placeholder="Search notes..."
                     onChangeText={(text) => setSearchQuery(text)}
@@ -109,8 +113,8 @@ export default function NotesList() {
                         },
                     ]}
                     inputStyle={{ fontSize: 16, color: isDark ? "#fff" : "#000" }}
-                    clearIcon={{ type: "material", name: "close" }}
-                    searchIcon={{ type: "material", name: "search" }}
+                    clearIcon={{ type: "material", name: "close", key: "close-icon-key" }}
+                    searchIcon={{ type: "material", name: "search", key: "search-icon-key" }}
                     loadingProps={{ size: "small" }}
                     showLoading={false}
                     onCancel={() => setSearchQuery("")}
@@ -121,9 +125,10 @@ export default function NotesList() {
             </ThemedView>
             <FlatList
                 data={filteredNotes}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => String(item.id)}
                 renderItem={({ item }) => (
                     <NoteItem
+                        key={item.id}
                         note={item}
                         onArchive={handleArchive}
                         onDelete={handleDelete}

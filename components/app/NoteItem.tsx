@@ -1,26 +1,32 @@
 import React from "react";
 import { StyleSheet, Pressable } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { Note } from "@/services/dummydata";
+
 import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
 
 import { GestureHandlerRootView, } from "react-native-gesture-handler";
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { Note } from "@/types/notetypes";
 
 
 type NoteItemProps = {
     note: Note;
-    onArchive: (id: string) => void;
-    onDelete: (id: string) => void;
-    onEdit: (id: string) => void;
-    onPin: (id: string) => void;
+    onArchive: (id: number) => void;
+    onDelete: (id: number) => void;
+    onEdit: (id: number) => void;
+    onPin: (id: number) => void;
     onLongPress: (note: Note) => void;
     onSwipeOpen?: (ref: any) => void; // new
 };
 
 
 export default function NoteItem({ note, onArchive, onDelete, onEdit, onPin, onLongPress, onSwipeOpen }: NoteItemProps) {
+
+    const colorScheme = useColorScheme();
+    const isDark = colorScheme === 'dark';
+
     const renderRightActions = () => (
         <ThemedView style={styles.actionContainer}>
             <Pressable
@@ -80,8 +86,10 @@ export default function NoteItem({ note, onArchive, onDelete, onEdit, onPin, onL
                             </ThemedText>
 
                             <ThemedView style={styles.metaRow}>
-                                <ThemedText style={styles.type}><ThemedText type="defaultSemiBold" style={{ "fontSize": 12, color: '#bbb' }}> Type:</ThemedText>{note.type}</ThemedText>
-                                <ThemedText style={styles.date}>{note.date}</ThemedText>
+                                <ThemedText style={styles.type}>
+                                    <ThemedText type="defaultSemiBold" style={{ "fontSize": 12, color: '#bbb' }}>Type:</ThemedText>
+                                    <ThemedText style={{ "fontSize": 11, color: isDark ? '#eee' : '#aaa' }}>{note.note_type}</ThemedText> </ThemedText>
+                                <ThemedText style={styles.date}>{note.timestamp}</ThemedText>
                             </ThemedView>
 
                             <ThemedText style={styles.preview} numberOfLines={1}>
@@ -98,9 +106,9 @@ export default function NoteItem({ note, onArchive, onDelete, onEdit, onPin, onL
 const styles = StyleSheet.create({
     container: {
         paddingVertical: 12,
-        paddingHorizontal: 16,
+        paddingHorizontal: 8,
         borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: "#ccc",
+        borderBottomColor: "#aaaa",
         flexDirection: "row",
         alignItems: "flex-start",
     },

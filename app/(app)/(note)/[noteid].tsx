@@ -1,17 +1,39 @@
 import { useLocalSearchParams, useNavigation } from 'expo-router';
-import { useLayoutEffect } from 'react';
-import { notes } from '@/services/dummydata';
-import { ThemedText } from '@/components/ThemedText';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { ActivityIndicator } from 'react-native';
+
+import { getNoteById } from '@/services/notes';
+import { Note } from '@/types/notetypes';
+
 import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
+import NoteView from '@/components/Note/NoteView';
 
 export default function NoteDetailsScreen() {
     const { noteid } = useLocalSearchParams();
     const navigation = useNavigation();
 
-    const note = notes.find((n) => n.id === noteid);
+    const [note, setNote] = useState<Note | null>(null);
+    const [loading, setLoading] = useState(true);
 
+    useEffect(() => {
+        const loadNote = async () => {
+            try {
+                const data = await getNoteById(noteid as string);
+                setNote(data);
+            } catch (error) {
+                console.error('Failed to fetch note', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadNote();
+    }, [noteid]);
+
+    // ✅ Safe header title update
     useLayoutEffect(() => {
-        if (note) {
+        if (note?.title) {
             navigation.setOptions({
                 headerTitle: () => (
                     <ThemedText
@@ -20,7 +42,7 @@ export default function NoteDetailsScreen() {
                         style={{
                             fontSize: 18,
                             fontWeight: 'bold',
-                            maxWidth: 250, // tweak as needed
+                            maxWidth: 250,
                         }}
                     >
                         {note.title}
@@ -28,20 +50,21 @@ export default function NoteDetailsScreen() {
                 ),
             });
         }
-    }, [note, navigation]);
+    }, [note?.title, navigation]);
+
+    if (loading) {
+        return <ActivityIndicator size="large" style={{ marginTop: 20 }} />;
+    }
 
     if (!note) {
         return (
             <ThemedView>
-                <ThemedText>Note not found</ThemedText>
+                <ThemedText>Note not found.</ThemedText>
             </ThemedView>
         );
     }
 
     return (
-        <ThemedView style={{ padding: 16 }}>
-            <ThemedText style={{ fontSize: 24 }}>{note.title}</ThemedText>
-            <ThemedText style={{ marginTop: 12 }}>{note.preview}</ThemedText>
-        </ThemedView>
+        <NoteView note={note} />
     );
 }

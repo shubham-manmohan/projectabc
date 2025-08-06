@@ -25,7 +25,9 @@ export default function AppLayout() {
                 }}>
             </Stack.Screen>
             <Stack.Screen
-                name="(note)/[noteid]">
+                name="(note)/[noteid]"
+                options={{ "headerBackTitle": "Back", "headerTitle": "Note Details" }}
+            >
             </Stack.Screen>
         </Stack>
     );
