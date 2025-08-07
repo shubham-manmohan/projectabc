@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, ActivityIndicator, StyleSheet } from 'react-native';
 import Bubble from './Bubble';
 import { ThemedView } from '../ThemedView';
@@ -10,49 +10,65 @@ type Props = {
     note: Note;
 };
 
+const PAGE_LIMIT = 10;
+
 export default function NoteView({ note }: Props) {
     const [bubbles, setBubbles] = useState<NoteBubble[]>([]);
     const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
-    const [loading, setLoading] = useState(false);
     const [initialLoading, setInitialLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
-    const fetchBubbles = useCallback(async (pageToLoad: number, skipIfLoading = false) => {
-        setLoading(prev => {
-            if (skipIfLoading && prev) return true; // exit early
-            return true;
-        });
+    const loadingRef = useRef(false);
+    const hasMoreRef = useRef(true);
+    const isFetchingNextPageRef = useRef(false);
+    const lastFetchedPageRef = useRef(0);
 
-        try {
-            const response = await getNoteBubblesPaginated(note.id, pageToLoad, 10);
-            setBubbles(prev => [...prev, ...response.bubbles]);
-            setHasMore(response.hasMore);
-            setPage(pageToLoad);
-        } catch (err) {
-            console.error("Error loading bubbles:", err);
-        } finally {
-            setLoading(false);
-            setInitialLoading(false);
-        }
-    }, [note.id]);
+    const fetchBubbles = useCallback(
+        async (pageToLoad: number, skipIfLoading = false) => {
+            if (skipIfLoading && loadingRef.current) return;
+            if (pageToLoad === lastFetchedPageRef.current) return;
 
+            lastFetchedPageRef.current = pageToLoad;
+            setLoading(true);
+            loadingRef.current = true;
+
+            try {
+                console.log("calling to get notes bubble:", note.id, pageToLoad, PAGE_LIMIT);
+                const response = await getNoteBubblesPaginated(note.id, pageToLoad, PAGE_LIMIT);
+                setBubbles(prev => [...prev, ...response.bubbles]);
+                hasMoreRef.current = response.hasMore;
+                setPage(pageToLoad);
+            } catch (err) {
+                console.error("Error loading bubbles:", err);
+            } finally {
+                setLoading(false);
+                loadingRef.current = false;
+                setInitialLoading(false);
+            }
+        },
+        [note.id]
+    );
 
     useEffect(() => {
-        setBubbles([]); // reset when note changes
+        setBubbles([]);
         setPage(1);
-        setHasMore(true);
+        hasMoreRef.current = true;
         setInitialLoading(true);
         fetchBubbles(1, false);
-    }, [note.id, fetchBubbles]);
+    }, [fetchBubbles]);
+
+
 
     const loadMore = () => {
-        if (!loading && hasMore) {
-            fetchBubbles(page + 1); // use latest page state
-        }
-    };
+        if (loading || isFetchingNextPageRef.current || !hasMoreRef.current) return;
 
+        isFetchingNextPageRef.current = true;
+        fetchBubbles(page + 1).finally(() => {
+            isFetchingNextPageRef.current = false;
+        });
+    };
     if (initialLoading) {
-        return <ActivityIndicator size="large" style={{ marginTop: 20 }} />;
+        return <ActivityIndicator size="small" style={{ marginTop: 20 }} />;
     }
 
     return (
@@ -70,10 +86,11 @@ export default function NoteView({ note }: Props) {
                     renderItem={({ item }) => <Bubble bubble={item} />}
                     contentContainerStyle={styles.listContent}
                     onEndReached={loadMore}
-                    onEndReachedThreshold={0.3}
+                    onEndReachedThreshold={0.1}
                     ListFooterComponent={
                         loading ? <ActivityIndicator size="small" style={{ marginVertical: 12 }} /> : null
                     }
+                    inverted // ✅ Show latest bubbles at bottom
                 />
             )}
         </ThemedView>
@@ -84,10 +101,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingHorizontal: 12,
-        paddingTop: 8,
+        paddingTop: 2,
     },
     listContent: {
-        paddingBottom: 24,
+        paddingBottom: 8,
     },
     emptyState: {
         justifyContent: 'center',

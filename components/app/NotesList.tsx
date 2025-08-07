@@ -1,7 +1,7 @@
 //File components/app/NoteList.tsx
 
 import React, { useCallback, useEffect, useState } from "react";
-import { FlatList, Alert, Modal, StyleSheet } from "react-native";
+import { FlatList, Alert, Modal, StyleSheet, ActivityIndicator } from "react-native";
 import NoteItem from "./NoteItem";
 import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
@@ -186,7 +186,7 @@ export default function NotesList() {
                 contentContainerStyle={{ paddingVertical: 0, paddingBottom: 80 }}
                 onEndReached={loadMoreNotes}
                 onEndReachedThreshold={0.5}
-                ListFooterComponent={loading ? <ThemedText>Loading...</ThemedText> : null}
+                ListFooterComponent={loading ? <ActivityIndicator size="small" style={{ marginVertical: 12 }} /> : null}
             />
             <Modal
                 visible={modalVisible}
