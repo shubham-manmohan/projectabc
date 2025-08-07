@@ -1,108 +1,99 @@
-import { useState } from "react";
-import { TextInput, StyleSheet, TouchableOpacity, View, KeyboardAvoidingView, Platform } from "react-native";
-import { Feather, MaterialIcons } from "@expo/vector-icons";
-import { ThemedView } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { useState } from 'react';
+import { Alert, Button, StyleSheet, TextInput } from 'react-native';
+import { useRouter } from 'expo-router';
+
+import authClient from '@/services/authClient';
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
 
 export default function NewNoteScreen() {
-    const [title, setTitle] = useState("");
-    const [isRecording, setIsRecording] = useState(false);
-    const [transcript, setTranscript] = useState("");
+    const [title, setTitle] = useState('');
+    const [noteType, setNoteType] = useState('');
+    const [preview, setPreview] = useState('');
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
-    const textColor = useThemeColor({}, "text");
-    const background = useThemeColor({}, "background");
+    const handleCreateNote = async () => {
+        if (!title || !noteType || !preview) {
+            Alert.alert('Missing fields', 'Please fill in all fields.');
+            return;
+        }
 
-    const handleRecordPress = () => {
-        setIsRecording(!isRecording);
-        // TODO: start or stop voice recording + update transcript
-    };
+        setLoading(true);
+        try {
+            const response = await authClient.post('/api/notes', {
+                title,
+                note_type: noteType,
+                preview,
+                timestamp: new Date().toISOString(),
+                actions: [],
+                bubbles: [],
+            });
 
-    const handleSave = () => {
-        console.log("Saving note:", { title, transcript });
-        // TODO: save to DB or local storage
-    };
-
-    const handleClear = () => {
-        setTitle("");
-        setTranscript("");
-        setIsRecording(false);
+            Alert.alert('Success', 'Note created successfully.');
+            console.log(response.data);
+            // router.back(); // or navigate somewhere else
+        } catch (error: any) {
+            console.error(error?.response?.data || error.message);
+            Alert.alert('Error', 'Failed to create note.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <KeyboardAvoidingView
-            style={{ flex: 1 }}
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
-        >
-            <ThemedView style={styles.container}>
-                <TextInput
-                    placeholder="Title (optional)"
-                    placeholderTextColor="#999"
-                    style={[styles.input, { color: textColor, borderColor: "#ccc" }]}
-                    value={title}
-                    onChangeText={setTitle}
-                />
+        <ThemedView style={styles.container}>
+            <ThemedText style={styles.label}>Title</ThemedText>
+            <TextInput
+                style={styles.input}
+                placeholder="Enter note title"
+                value={title}
+                onChangeText={setTitle}
+            />
 
-                <View style={styles.transcriptBox}>
-                    <ThemedText type="subtitle">Transcript</ThemedText>
-                    <ThemedText>{transcript || "Your voice note will appear here..."}</ThemedText>
-                </View>
+            <ThemedText style={styles.label}>Note Type</ThemedText>
+            <TextInput
+                style={styles.input}
+                placeholder="Enter note type"
+                value={noteType}
+                onChangeText={setNoteType}
+            />
 
-                <TouchableOpacity onPress={handleRecordPress} style={styles.recordButton}>
-                    <MaterialIcons
-                        name={isRecording ? "stop" : "keyboard-voice"}
-                        size={36}
-                        color={background}
-                    />
-                </TouchableOpacity>
+            <ThemedText style={styles.label}>Preview</ThemedText>
+            <TextInput
+                style={[styles.input, styles.previewInput]}
+                placeholder="Enter preview text"
+                value={preview}
+                multiline
+                numberOfLines={4}
+                onChangeText={setPreview}
+            />
 
-                <View style={styles.footer}>
-                    <TouchableOpacity onPress={handleClear}>
-                        <Feather name="trash-2" size={24} color={textColor} />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={handleSave}>
-                        <Feather name="save" size={24} color={textColor} />
-                    </TouchableOpacity>
-                </View>
-            </ThemedView>
-        </KeyboardAvoidingView>
+            <Button title={loading ? 'Creating...' : 'Create Note'} onPress={handleCreateNote} disabled={loading} />
+        </ThemedView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 24,
-        justifyContent: "space-between",
+        padding: 16,
+    },
+    label: {
+        marginTop: 16,
+        fontSize: 16,
+        fontWeight: '600',
     },
     input: {
-        fontSize: 18,
-        borderBottomWidth: 1,
-        marginBottom: 16,
-        paddingVertical: 8,
-    },
-    transcriptBox: {
-        flex: 1,
-        borderRadius: 12,
-        padding: 16,
+        marginTop: 8,
+        padding: 10,
         borderWidth: 1,
-        borderColor: "#ddd",
-        marginBottom: 16,
+        borderRadius: 6,
+        borderColor: '#ccc',
+        backgroundColor: '#fff',
     },
-    recordButton: {
-        alignSelf: "center",
-        backgroundColor: "#635BFF",
-        width: 72,
-        height: 72,
-        borderRadius: 36,
-        justifyContent: "center",
-        alignItems: "center",
-        marginBottom: 12,
-    },
-    footer: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        paddingHorizontal: 32,
-        marginBottom: 24,
+    previewInput: {
+        height: 100,
+        textAlignVertical: 'top',
     },
 });
