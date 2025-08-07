@@ -37,3 +37,11 @@ export interface PaginatedNoteResponse {
     hasMore: boolean;
     total: number;
 }
+
+
+export interface PaginatedNoteBubbleResponse {
+    bubbles: NoteBubble[];
+    page: number;
+    hasMore: boolean;
+    total: number;
+}
