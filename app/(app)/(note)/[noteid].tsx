@@ -22,7 +22,8 @@ export default function NoteDetailsScreen() {
         const loadNote = async () => {
             try {
                 const data = await getNoteById(noteid as string);
-                delete data.bubbles;
+                // console.log(data);
+                // delete data.bubbles;
                 setNote(data);
             } catch (error) {
                 console.error('Failed to fetch note', error);

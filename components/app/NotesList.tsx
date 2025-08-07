@@ -1,6 +1,6 @@
 //File components/app/NoteList.tsx
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, Alert, Modal, StyleSheet, ActivityIndicator } from "react-native";
 import NoteItem from "./NoteItem";
 import { ThemedView } from "../ThemedView";
