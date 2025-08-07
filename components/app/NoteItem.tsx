@@ -9,6 +9,7 @@ import { GestureHandlerRootView, } from "react-native-gesture-handler";
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Note } from "@/types/notetypes";
+import { formatDate } from "@/services/util";
 
 
 type NoteItemProps = {
@@ -89,7 +90,7 @@ export default function NoteItem({ note, onArchive, onDelete, onEdit, onPin, onL
                                 <ThemedText style={styles.type}>
                                     <ThemedText type="defaultSemiBold" style={{ "fontSize": 12, color: '#bbb' }}>Type:</ThemedText>
                                     <ThemedText style={{ "fontSize": 11, color: isDark ? '#eee' : '#aaa' }}>{note.note_type}</ThemedText> </ThemedText>
-                                <ThemedText style={styles.date}>{note.timestamp}</ThemedText>
+                                <ThemedText style={styles.date}>{formatDate(note.timestamp)}</ThemedText>
                             </ThemedView>
 
                             <ThemedText style={styles.preview} numberOfLines={1}>

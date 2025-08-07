@@ -1,9 +1,8 @@
 //File components/app/NoteList.tsx
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, Alert, Modal, StyleSheet } from "react-native";
 import NoteItem from "./NoteItem";
-import { notes as dummyNotes } from "@/services/dummydata";
 import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
 import { GestureHandlerRootView, Pressable } from "react-native-gesture-handler";
@@ -13,9 +12,10 @@ import { SearchBarBaseProps } from "react-native-elements/dist/searchbar/SearchB
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Note } from "@/types/notetypes";
+import { getAllNotes } from "@/services/notes";
 
 export default function NotesList() {
-    const [notes, setNotes] = useState<Note[]>(dummyNotes);
+    const [notes, setNotes] = useState<Note[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
 
     const filteredNotes = notes.filter(note =>
@@ -90,6 +90,21 @@ export default function NotesList() {
 
     const colorScheme = useColorScheme();
     const isDark = colorScheme === 'dark';
+
+
+    useEffect(() => {
+        const fetchNotes = async () => {
+            try {
+                const allNotes = await getAllNotes();
+                setNotes(allNotes);
+            } catch (err) {
+                console.error('Failed to fetch notes:', err);
+            }
+        };
+
+        fetchNotes();
+    }, []);
+
     return (
         <>
             <ThemedView style={styles.wrapper}>
@@ -139,7 +154,6 @@ export default function NotesList() {
                     />
                 )}
                 contentContainerStyle={{ paddingVertical: 0, paddingBottom: 80 }}
-            // ItemSeparatorComponent={() => { return (<View style={{ height: 1, backgroundColor: 'black' }}></View>) }}
             />
             <Modal
                 visible={modalVisible}
