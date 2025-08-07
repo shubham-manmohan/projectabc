@@ -64,9 +64,9 @@ const Bubble: React.FC<Props> = ({ bubble }) => {
                     color={themeColors.icon}
                     style={styles.icon}
                 />
-                <ThemedText style={[styles.ownerText, { color: themeColors.text }]}>
+                {/* <ThemedText style={[styles.ownerText, { color: themeColors.text }]}>
                     {bubble.owner}
-                </ThemedText>
+                </ThemedText> */}
                 {bubble.is_edited && (
                     <Icon
                         name="edit"
@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 4,
+        backgroundColor: 'transparent'
     },
     ownerText: {
         fontSize: 12,

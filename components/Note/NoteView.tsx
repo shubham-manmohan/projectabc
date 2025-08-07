@@ -1,6 +1,6 @@
 // components/Note/NoteView.tsx
 import React from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import { Note } from '@/types/notetypes';
 import Bubble from './Bubble';
 import { ThemedView } from '../ThemedView';
@@ -16,11 +16,11 @@ export default function NoteView({ note }: Props) {
     return (
         <ThemedView style={styles.container}>
             {!hasBubbles ? (
-                <View style={styles.emptyState}>
+                <ThemedView style={styles.emptyState}>
                     <ThemedText type="default" style={styles.emptyText}>
                         No note content available.
                     </ThemedText>
-                </View>
+                </ThemedView>
             ) : (
                 <FlatList
                     data={note.bubbles}

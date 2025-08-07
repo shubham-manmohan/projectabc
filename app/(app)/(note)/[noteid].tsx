@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 
 import { getNoteById } from '@/services/notes';
 import { Note } from '@/types/notetypes';
@@ -58,8 +58,10 @@ export default function NoteDetailsScreen() {
 
     if (!note) {
         return (
-            <ThemedView>
-                <ThemedText>Note not found.</ThemedText>
+            <ThemedView style={styles.emptyState}>
+                <ThemedText type="default" style={styles.emptyText}>
+                    Note Not Found.
+                </ThemedText>
             </ThemedView>
         );
     }
@@ -68,3 +70,18 @@ export default function NoteDetailsScreen() {
         <NoteView note={note} />
     );
 }
+
+
+const styles = StyleSheet.create({
+    emptyState: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 20,
+    },
+    emptyText: {
+        opacity: 0.6,
+        fontSize: 14,
+        textAlign: 'center',
+    },
+});
