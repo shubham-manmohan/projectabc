@@ -30,9 +30,9 @@ export default function NewNoteScreen() {
                 bubbles: [],
             });
 
-            Alert.alert('Success', 'Note created successfully.');
+            Alert.alert('Success', 'Note created successfully...');
             console.log(response.data);
-            // router.back(); // or navigate somewhere else
+            router.back(); // or navigate somewhere else
         } catch (error: any) {
             console.error(error?.response?.data || error.message);
             Alert.alert('Error', 'Failed to create note.');
