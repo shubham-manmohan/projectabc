@@ -1,3 +1,5 @@
+//File app/(app)/(note)/[noteid]/tsx
+
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';

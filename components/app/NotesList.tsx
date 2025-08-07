@@ -1,6 +1,6 @@
 //File components/app/NoteList.tsx
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, Alert, Modal, StyleSheet } from "react-native";
 import NoteItem from "./NoteItem";
 import { ThemedView } from "../ThemedView";
@@ -17,6 +17,10 @@ import { getAllNotes } from "@/services/notes";
 export default function NotesList() {
     const [notes, setNotes] = useState<Note[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
+
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const filteredNotes = notes.filter(note =>
         note.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -92,18 +96,44 @@ export default function NotesList() {
     const isDark = colorScheme === 'dark';
 
 
+    const loadMoreNotes = async () => {
+        if (loading || !hasMore) return;
+
+        setLoading(true);
+        try {
+            const response = await getAllNotes(page + 1, 10);
+            setNotes((prev) => [...prev, ...response.notes]);
+            setHasMore(response.hasMore);
+            setPage((prevPage) => prevPage + 1); // ensure you're always incrementing based on latest state
+        } catch (err) {
+            console.error("Error loading notes:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchNotes = async () => {
+        // initial load
+        const fetchInitialNotes = async () => {
+            setLoading(true);
             try {
-                const allNotes = await getAllNotes();
-                setNotes(allNotes);
+                const response = await getAllNotes(1, 10);
+                setNotes(response.notes);
+                setHasMore(response.hasMore);
+                setPage(1);
             } catch (err) {
-                console.error('Failed to fetch notes:', err);
+                console.error("Error loading initial notes:", err);
+            } finally {
+                setLoading(false);
             }
         };
 
-        fetchNotes();
+        fetchInitialNotes();
     }, []);
+
+
+
+
 
     return (
         <>
@@ -154,6 +184,9 @@ export default function NotesList() {
                     />
                 )}
                 contentContainerStyle={{ paddingVertical: 0, paddingBottom: 80 }}
+                onEndReached={loadMoreNotes}
+                onEndReachedThreshold={0.5}
+                ListFooterComponent={loading ? <ThemedText>Loading...</ThemedText> : null}
             />
             <Modal
                 visible={modalVisible}

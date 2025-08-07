@@ -30,3 +30,10 @@ export type Note = {
     actions?: string[];
     bubbles?: NoteBubble[];
 };
+
+export interface PaginatedNoteResponse {
+    notes: Note[];
+    page: number;
+    hasMore: boolean;
+    total: number;
+}
