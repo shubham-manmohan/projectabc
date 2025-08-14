@@ -2,6 +2,10 @@
 
 import NewNoteForm from '@/components/Note/NewNoteForm';
 
+
 export default function NewNoteScreen() {
-    return <NewNoteForm />;
+    return (
+        <>
+            <NewNoteForm />
+        </>)
 }

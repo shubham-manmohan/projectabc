@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
     Alert,
     KeyboardAvoidingView,
@@ -13,6 +13,8 @@ import NoteTextArea from './NoteTextArea';
 import SubmitButton from './SubmitButton';
 import { ThemedView } from '@/components/ThemedView';
 import authClient from '@/services/authClient';
+import VoiceRecorderSheet, { VoiceRecorderSheetHandle } from './voice/VoiceRecorderSheet';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function NewNoteForm() {
     const [title, setTitle] = useState('');
@@ -58,6 +60,8 @@ export default function NewNoteForm() {
         }
     };
 
+    const sheetRef = useRef<VoiceRecorderSheetHandle>(null);
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -71,6 +75,14 @@ export default function NewNoteForm() {
                     <SubmitButton title="Create Note" onPress={handleCreateNote} loading={loading} />
                 </ThemedView>
             </ScrollView>
+            <VoiceRecorderSheet ref={sheetRef} />
+            <MaterialCommunityIcons
+                style={{ position: "absolute", bottom: 40, right: 20 }}
+                name="record-circle"
+                size={50}
+                color="red"
+                onPress={() => sheetRef.current?.open()}
+            />
         </KeyboardAvoidingView>
     );
 }
