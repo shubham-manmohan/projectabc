@@ -9,12 +9,12 @@ import { ThemedText } from '@/components/ThemedText';
 export default function NewNoteScreen() {
     const [title, setTitle] = useState('');
     const [noteType, setNoteType] = useState('');
-    const [preview, setPreview] = useState('');
+    const [note, setNote] = useState('');
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const handleCreateNote = async () => {
-        if (!title || !noteType || !preview) {
+        if (!title || !noteType || !note) {
             Alert.alert('Missing fields', 'Please fill in all fields.');
             return;
         }
@@ -24,10 +24,16 @@ export default function NewNoteScreen() {
             const response = await authClient.post('/api/notes', {
                 title,
                 note_type: noteType,
-                preview,
+                "preview": note,
                 timestamp: new Date().toISOString(),
                 actions: [],
-                bubbles: [],
+                bubbles: [{
+                    "note_bubble_type": "text",
+                    "content": note,
+                    "audio_path": "",
+                    "owner": "USER",
+                    "is_edited": false
+                }],
             });
 
             Alert.alert('Success', 'Note created successfully...');
@@ -59,14 +65,14 @@ export default function NewNoteScreen() {
                 onChangeText={setNoteType}
             />
 
-            <ThemedText style={styles.label}>Preview</ThemedText>
+            <ThemedText style={styles.label}>Note</ThemedText>
             <TextInput
-                style={[styles.input, styles.previewInput]}
-                placeholder="Enter preview text"
-                value={preview}
+                style={[styles.input, styles.noteInput]}
+                placeholder="Enter Note Content"
+                value={note}
                 multiline
                 numberOfLines={4}
-                onChangeText={setPreview}
+                onChangeText={setNote}
             />
 
             <Button title={loading ? 'Creating...' : 'Create Note'} onPress={handleCreateNote} disabled={loading} />
@@ -92,7 +98,7 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         backgroundColor: '#fff',
     },
-    previewInput: {
+    noteInput: {
         height: 100,
         textAlignVertical: 'top',
     },

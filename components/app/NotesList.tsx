@@ -22,6 +22,8 @@ export default function NotesList() {
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
 
+    const [refreshing, setRefreshing] = useState(false);
+
     const filteredNotes = notes.filter(note =>
         note.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -112,26 +114,26 @@ export default function NotesList() {
         }
     };
 
-    useEffect(() => {
-        // initial load
-        const fetchInitialNotes = async () => {
-            setLoading(true);
-            try {
-                const response = await getAllNotes(1, 10);
-                setNotes(response.notes);
-                setHasMore(response.hasMore);
-                setPage(1);
-            } catch (err) {
-                console.error("Error loading initial notes:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchNotes = async (pageNumber = 1) => {
+        setLoading(true);
+        try {
+            const response = await getAllNotes(pageNumber, 10);
+            setNotes(response.notes);
+            setHasMore(response.hasMore);
+            setPage(pageNumber);
+        } catch (err) {
+            console.error("Error fetching notes:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        fetchInitialNotes();
+    useEffect(() => {
+        fetchNotes();
     }, []);
 
 
+    const onRefresh = () => fetchNotes(1);
 
 
 
@@ -187,6 +189,8 @@ export default function NotesList() {
                 onEndReached={loadMoreNotes}
                 onEndReachedThreshold={0.5}
                 ListFooterComponent={loading ? <ActivityIndicator size="small" style={{ marginVertical: 12 }} /> : null}
+                refreshing={refreshing}
+                onRefresh={onRefresh}
             />
             <Modal
                 visible={modalVisible}
