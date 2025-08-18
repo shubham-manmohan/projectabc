@@ -10,12 +10,13 @@ interface NoteTextAreaProps extends TextInputProps {
 export default function NoteTextArea({ label, ...props }: NoteTextAreaProps) {
     const borderColor = useThemeColor({}, 'icon');
     const backgroundColor = useThemeColor({}, 'background');
+    const color = useThemeColor({}, 'text');
 
     return (
         <ThemedView style={styles.wrapper}>
             <ThemedText style={styles.label}>{label}</ThemedText>
             <TextInput
-                style={[styles.textArea, { borderColor, backgroundColor }]}
+                style={[styles.textArea, { borderColor, backgroundColor, color }]}
                 multiline
                 numberOfLines={6}
                 textAlignVertical="top"

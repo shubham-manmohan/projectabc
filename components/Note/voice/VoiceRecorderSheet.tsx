@@ -6,7 +6,6 @@ import VoiceRecorderWrapper from "./VoiceRecorderWrapper";
 import { ThemedView } from "@/components/ThemedView";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { Colors } from "@/constants/Colors";
 
 export type VoiceRecorderSheetHandle = {
     open: () => void;

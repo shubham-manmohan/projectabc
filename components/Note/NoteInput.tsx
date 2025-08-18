@@ -11,11 +11,13 @@ export default function NoteInput({ label, ...props }: NoteInputProps) {
     const borderColor = useThemeColor({}, 'tint');
     const backgroundColor = useThemeColor({}, 'background');
 
+    const color = useThemeColor({}, 'text');
+
     return (
         <ThemedView style={styles.wrapper}>
             <ThemedText style={styles.label}>{label}</ThemedText>
             <TextInput
-                style={[styles.input, { borderColor, backgroundColor }]}
+                style={[styles.input, { borderColor, backgroundColor, color }]}
                 placeholderTextColor="#999"
                 {...props}
             />
