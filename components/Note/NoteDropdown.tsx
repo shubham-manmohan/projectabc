@@ -1,4 +1,4 @@
-// components/NoteDropdown.tsx
+// components/Note/NoteDropdown.tsx
 
 import React, { useState } from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -25,7 +25,7 @@ export default function NoteDropdown({ label, value, onValueChange }: NoteDropdo
     const color = useThemeColor({}, 'text');
 
     return (
-        <View style={[styles.wrapper]}>
+        <View style={[styles.wrapper, open && { zIndex: 3000 }]}>
             <Text style={[styles.label, { color }]}>{label}</Text>
             <DropDownPicker
                 open={open}
@@ -62,6 +62,9 @@ export default function NoteDropdown({ label, value, onValueChange }: NoteDropdo
                 ArrowDownIconComponent={({ style }) => (
                     <AntDesign name='arrowdown' color={color} size={20} />
                 )}
+
+                zIndex={3000}
+                zIndexInverse={1000}
             />
         </View>
     );
@@ -70,7 +73,7 @@ export default function NoteDropdown({ label, value, onValueChange }: NoteDropdo
 const styles = StyleSheet.create({
     wrapper: {
         marginTop: 16,
-        zIndex: 1000, // important for avoiding overlap issues
+        zIndex: 1000
     },
     label: {
         fontSize: 16,

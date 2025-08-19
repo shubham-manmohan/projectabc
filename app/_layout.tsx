@@ -1,3 +1,5 @@
+//File app/_layout.tsx
+
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
@@ -19,7 +21,7 @@ export default function RootLayout() {
     // Async font loading only occurs in development.
     return null;
   }
-  // LogBox.ignoreAllLogs();
+  LogBox.ignoreAllLogs();
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>

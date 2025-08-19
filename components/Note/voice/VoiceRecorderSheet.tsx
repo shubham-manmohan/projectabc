@@ -70,7 +70,8 @@ export default VoiceRecorderSheet;
 const styles = StyleSheet.create({
     contentContainer: {
         padding: 16,
-        flex: 1
+        flex: 1,
+        zIndex: 3000
     },
 });
 

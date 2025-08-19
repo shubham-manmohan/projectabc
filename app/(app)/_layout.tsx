@@ -1,3 +1,5 @@
+//File app/(app)/_layout.tsx
+
 import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { useAuth } from "@/providers/AuthProvider";

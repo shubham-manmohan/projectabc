@@ -1,12 +1,12 @@
+//File components/Note/NewNoteForm.tsx
+
 import { useRef, useState } from 'react';
 import {
     Alert,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
     StyleSheet,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import NoteInput from './NoteInput';
 import NoteTextArea from './NoteTextArea';
@@ -64,18 +64,19 @@ export default function NewNoteForm() {
     const sheetRef = useRef<VoiceRecorderSheetHandle>(null);
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            style={styles.flex}
+        <KeyboardAwareScrollView
+            enableOnAndroid
+            extraScrollHeight={100}
+            keyboardShouldPersistTaps="handled"
+            nestedScrollEnabled
+            contentContainerStyle={styles.scrollContent}
         >
-            <ScrollView contentContainerStyle={styles.scrollContent}>
-                <ThemedView style={styles.formContainer}>
-                    <NoteInput label="Title" value={title} onChangeText={setTitle} placeholder="Enter title" />
-                    <NoteDropdown label="Note Type" value={noteType} onValueChange={setNoteType} />
-                    <NoteTextArea label="Note" value={note} onChangeText={setNote} placeholder="Enter content..." />
-                    <SubmitButton title="Create Note" onPress={handleCreateNote} loading={loading} />
-                </ThemedView>
-            </ScrollView>
+            <ThemedView style={styles.formContainer}>
+                <NoteInput label="Title" value={title} onChangeText={setTitle} placeholder="Enter title" />
+                <NoteDropdown label="Note Type" value={noteType} onValueChange={setNoteType} />
+                <NoteTextArea label="Note" value={note} onChangeText={setNote} placeholder="Enter content..." />
+                <SubmitButton title="Create Note" onPress={handleCreateNote} loading={loading} />
+            </ThemedView>
             <VoiceRecorderSheet ref={sheetRef} />
             <MaterialCommunityIcons
                 style={{ position: "absolute", bottom: 40, right: 20 }}
@@ -84,7 +85,8 @@ export default function NewNoteForm() {
                 color="red"
                 onPress={() => sheetRef.current?.open()}
             />
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
+
     );
 }
 
@@ -94,6 +96,7 @@ const styles = StyleSheet.create({
     },
     scrollContent: {
         paddingBottom: 80,
+        flexGrow: 1,
     },
     formContainer: {
         padding: 16,
