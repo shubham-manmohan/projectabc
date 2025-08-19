@@ -15,10 +15,11 @@ import { ThemedView } from '@/components/ThemedView';
 import authClient from '@/services/authClient';
 import VoiceRecorderSheet, { VoiceRecorderSheetHandle } from './voice/VoiceRecorderSheet';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import NoteDropdown from './NoteDropdown';
 
 export default function NewNoteForm() {
     const [title, setTitle] = useState('');
-    const [noteType, setNoteType] = useState('');
+    const [noteType, setNoteType] = useState('Prescription');
     const [note, setNote] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -70,7 +71,7 @@ export default function NewNoteForm() {
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 <ThemedView style={styles.formContainer}>
                     <NoteInput label="Title" value={title} onChangeText={setTitle} placeholder="Enter title" />
-                    <NoteInput label="Note Type" value={noteType} onChangeText={setNoteType} placeholder="e.g. Personal, Work" />
+                    <NoteDropdown label="Note Type" value={noteType} onValueChange={setNoteType} />
                     <NoteTextArea label="Note" value={note} onChangeText={setNote} placeholder="Enter content..." />
                     <SubmitButton title="Create Note" onPress={handleCreateNote} loading={loading} />
                 </ThemedView>
